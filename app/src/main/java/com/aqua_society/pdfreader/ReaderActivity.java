@@ -19,6 +19,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.github.barteksc.pdfviewer.PDFView;
 import com.github.barteksc.pdfviewer.listener.OnDrawListener;
@@ -248,10 +249,23 @@ public class ReaderActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if(utils.isInternetAvailable()){
+        super.onBackPressed();
+
+        if(utils.isInternetAvailable(getBaseContext())){
             finish();
-            Intent intent = new Intent(ReaderActivity.this, OurApps.class);
-            startActivity(intent);
+
+            if(utils.APPS_LIST.size() > 0 && utils.isInternetAvailable(getBaseContext())){
+                Intent intent = new Intent(ReaderActivity.this, OurApps.class);
+                startActivity(intent);
+            }
+            else{
+                if(utils.isInternetAvailable(getBaseContext())){
+                    Toast.makeText(getBaseContext(),"صفحة التطبيقات لم تحمل بسبب جودة الإتصال لديك",Toast.LENGTH_SHORT).show();
+                }
+                else{
+                    Toast.makeText(getBaseContext(),"المرجو التأكد من إتصالك",Toast.LENGTH_SHORT).show();
+                }
+            }
         }
     }
 
@@ -287,4 +301,5 @@ public class ReaderActivity extends AppCompatActivity {
     private void requestNewInterstitial() {
         mInterstitialAd.loadAd(utils.adRequest());
     }
+
 }

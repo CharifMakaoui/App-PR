@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import retrofit2.Call;
@@ -28,40 +29,12 @@ public class OurApps extends AppCompatActivity {
 
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
 
-        appsAdapter = new AppsAdapter(getBaseContext(),generateApps());
+        Collections.shuffle(utils.APPS_LIST);
+        appsAdapter = new AppsAdapter(getBaseContext(),utils.APPS_LIST);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(appsAdapter);
     }
 
-
-    private List<Apps> generateApps(){
-        List<Apps> appsList = new ArrayList<>();
-
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://www.dropbox.com/s/tobqthcuqy5wmml/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-        MyApi apps = retrofit.create(MyApi.class);
-
-        Call<List<Apps>> connection = apps.getMyApps();
-        connection.enqueue(new Callback<List<Apps>>() {
-
-            @Override
-            public void onResponse(Call<List<Apps>> call, Response<List<Apps>> response) {
-                Log.d("ourApps","nombre des app : "+response.body().size());
-                appsAdapter.update(response.body());
-                appsAdapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onFailure(Call<List<Apps>> call, Throwable t) {
-                Log.d("ourApps","no fuck");
-            }
-        });
-
-        return appsList;
-    }
 }

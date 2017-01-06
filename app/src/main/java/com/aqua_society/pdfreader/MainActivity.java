@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdView;
@@ -48,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
         initView();
         StartSplash();
         GetAdsCodes();
+        utils.generateApps();
     }
 
     private void initView() {
@@ -83,11 +85,30 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        AboutAuteur.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this,AboutActivity.class);
+                MainActivity.this.startActivity(intent);
+            }
+        });
+
         ourApps.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, OurApps.class);
-                MainActivity.this.startActivity(intent);
+
+                if(utils.APPS_LIST.size() > 0 && utils.isInternetAvailable(getBaseContext())){
+                    Intent intent = new Intent(MainActivity.this, OurApps.class);
+                    MainActivity.this.startActivity(intent);
+                }
+                else{
+                    if(utils.isInternetAvailable(getBaseContext())){
+                        Toast.makeText(getBaseContext(),"صفحة التطبيقات لم تحمل بسبب جودة الإتصال لديك",Toast.LENGTH_SHORT).show();
+                    }
+                    else{
+                        Toast.makeText(getBaseContext(),"المرجو التأكد من إتصالك",Toast.LENGTH_SHORT).show();
+                    }
+                }
             }
         });
 
